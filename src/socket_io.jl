@@ -9,7 +9,7 @@ export write_erlang_term, write_binary_stream
 # Byte Reading Functions
 #------------------------------------------------------------------------------
 
-function read_erlang_term (s::TCPSocket)
+function read_erlang_term (s::Base.TcpSocket)
     bytes = Array(Uint8, 0)
     length_header = readbytes(s, 4)
     nbytes = decode_integer(length_header)
@@ -22,7 +22,7 @@ function read_erlang_term (s::TCPSocket)
     vcat(length_header, bytes)
 end
 
-function read_binary_stream (s::TCPSocket)
+function read_binary_stream (s::Base.TcpSocket)
     bytes = Array(Uint8, 0)
     length_header = readbytes(s, 4)
     nbytes = decode_integer(length_header)
@@ -45,7 +45,7 @@ end
 # Byte Writing Functions
 #------------------------------------------------------------------------------
 
-function write_erlang_term (s::TCPSocket, bytes::Array{Uint8})
+function write_erlang_term (s::Base.TcpSocket, bytes::Array{Uint8})
     nbytes = length(bytes)
     nbytes_written = 0
     nbytes_written_total = 0
@@ -58,7 +58,7 @@ function write_erlang_term (s::TCPSocket, bytes::Array{Uint8})
     nbytes_written_total
 end
 
-function write_binary_stream (s::TCPSocket, bytes::Array{Uint8})
+function write_binary_stream (s::Base.TcpSocket, bytes::Array{Uint8})
     length_header = encode_integer(uint32(length(bytes)))
     bytes = vcat(length_header, bytes)
     bytes = vcat(bytes, uint8([0,0,0,0]))

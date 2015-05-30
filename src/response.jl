@@ -8,7 +8,7 @@ export handle_response
 # Response Handlers
 #------------------------------------------------------------------------------
 
-function handle_response (s::TCPSocket, x::Any)
+function handle_response (s::Base.TcpSocket, x::Any)
     info("[response] Response $x")
     reply_close(s, x)
 end
@@ -19,7 +19,7 @@ be streamed out. It is assumed that each byte array is one 'chunk' terminated
 by a 4 byte 0 header. This should change soon.
 =#
 
-function handle_response (s::TCPSocket, bytes::Array{Uint8})
+function handle_response (s::Base.TcpSocket, bytes::Array{Uint8})
     info("[response] Forming streaming response")
     reply_info(s, :stream, [])
     reply_stream_close(s, bytes)
