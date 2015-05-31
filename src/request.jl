@@ -8,7 +8,7 @@ export handle_request
 # Base Request Handler
 #------------------------------------------------------------------------------
 
-function handle_request (s::TCPSocket)
+function handle_request (s::Base.TcpSocket)
     r = nothing
 
     while isopen(s)
@@ -24,38 +24,38 @@ end
 # Generic Request Handlers
 #------------------------------------------------------------------------------
 
-function handle_request (s::TCPSocket, r::CallRequest)
+function handle_request (s::Base.TcpSocket, r::CallRequest)
     x::Any = r.fun((r.args)...)
     info("[request] Applied $(r.fun) to $(r.args)")
     handle_response(s, x)
 end
 
-function handle_request (s::TCPSocket, r::CastRequest)
+function handle_request (s::Base.TcpSocket, r::CastRequest)
     info("[request] CastRequest received")
     noreply(s)
     x::Any = r.fun((r.args)...)
     x
 end
 
-function handle_request (s::TCPSocket, r::InfoRequest)
+function handle_request (s::Base.TcpSocket, r::InfoRequest)
     info("[request] InfoRequest received")
     noreply(s)
 end
 
-function handle_request (s::TCPSocket, r::ErrorRequest)
+function handle_request (s::Base.TcpSocket, r::ErrorRequest)
     info("[request] ErrorRequest received")
     noreply_close(s)
     error("Error request $r signaled")
 end
 
-function handle_request (s::TCPSocket, r::StreamingCallRequest)
+function handle_request (s::Base.TcpSocket, r::StreamingCallRequest)
     info("[request] StreamingCallRequest received")
     bytes::Array{Uint8} = read_binary_stream(s)
     x::Any = r.fun((r.args)..., bytes)
     handle_response(s, x)
 end
 
-function handle_request (s::TCPSocket, r::CallbackCastRequest)
+function handle_request (s::Base.TcpSocket, r::CallbackCastRequest)
     info("[request] CallbackCastRequest received")
     noreply(s)
     x::Any = r.fun((r.args)...)
@@ -67,7 +67,7 @@ end
 # Request Formation Functions
 #------------------------------------------------------------------------------
 
-function form_request (s::TCPSocket, r::Union(Request,Void))
+function form_request (s::Base.TcpSocket, r)#::Union(Request,Void))
     if r == nothing
         next_request(s)
     else
@@ -76,7 +76,7 @@ function form_request (s::TCPSocket, r::Union(Request,Void))
     end
 end
 
-function next_request (s::TCPSocket)
+function next_request (s::Base.TcpSocket)
     info("[request] Reading next request")
     bytes = read_erlang_term(s)
     info("[request] Read erlang term $bytes")
