@@ -67,7 +67,7 @@ end
 # Request Formation Functions
 #------------------------------------------------------------------------------
 
-function form_request (s::Base.TcpSocket, r::Union(Request,Void))
+function form_request (s::Base.TcpSocket, r)#::Union(Request,Void))
     if r == nothing
         next_request(s)
     else
